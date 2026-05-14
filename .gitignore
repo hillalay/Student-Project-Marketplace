@@ -29,5 +29,4 @@ pnpm-debug.log*
 Thumbs.db
 
 # Editor files
-.vscode/
 .idea/
