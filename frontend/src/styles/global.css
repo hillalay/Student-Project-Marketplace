@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap");
 
 :root {
-  --bg-main: #fffaf3;
+ --bg-main: #fffaf3;
   --bg-card: #ffffff;
 
   --bg-soft-pink: #fff1f6;
@@ -28,7 +28,6 @@
 
   --shadow-soft: 0 18px 45px rgba(88, 64, 43, 0.08);
   --shadow-card: 0 12px 30px rgba(88, 64, 43, 0.07);
-  --shadow-colored: 0 20px 45px rgba(165, 145, 210, 0.16);
 
   --radius-xl: 34px;
   --radius-lg: 26px;
@@ -47,10 +46,8 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at 8% 12%, rgba(255, 209, 232, 0.65) 0, transparent 28%),
-    radial-gradient(circle at 88% 8%, rgba(210, 245, 210, 0.75) 0, transparent 26%),
-    radial-gradient(circle at 78% 78%, rgba(205, 183, 255, 0.36) 0, transparent 30%),
-    radial-gradient(circle at 20% 85%, rgba(169, 216, 255, 0.32) 0, transparent 25%),
+    radial-gradient(circle at top left, #fff1f6 0, transparent 32%),
+    radial-gradient(circle at top right, #eefbea 0, transparent 30%),
     var(--bg-main);
   color: var(--text-main);
 }
