@@ -2,27 +2,38 @@
 
 :root {
   --bg-main: #fffaf3;
+  --bg-card: #ffffff;
+
   --bg-soft-pink: #fff1f6;
   --bg-soft-green: #eefbea;
   --bg-soft-yellow: #fff7cf;
-  --bg-card: #ffffff;
+  --bg-soft-purple: #f3edff;
+  --bg-soft-blue: #edf7ff;
+  --bg-soft-mint: #ecfff8;
 
   --primary-green: #98d8aa;
   --primary-pink: #f6b8d0;
   --primary-yellow: #f5d96b;
+  --primary-purple: #cdb7ff;
+  --primary-blue: #a9d8ff;
+  --primary-mint: #a7ead4;
 
   --text-main: #2f2f35;
   --text-muted: #74747c;
   --text-light: #9a9aa3;
 
-  --border-soft: #efe7dc;
-  --shadow-soft: 0 18px 45px rgba(88, 64, 43, 0.08);
-  --shadow-card: 0 10px 25px rgba(88, 64, 43, 0.06);
+  --border-soft: #eee5dc;
+  --border-purple: #e3d6ff;
+  --border-blue: #d7ecff;
 
-  --radius-xl: 28px;
-  --radius-lg: 22px;
-  --radius-md: 16px;
-  --radius-sm: 12px;
+  --shadow-soft: 0 18px 45px rgba(88, 64, 43, 0.08);
+  --shadow-card: 0 12px 30px rgba(88, 64, 43, 0.07);
+  --shadow-colored: 0 20px 45px rgba(165, 145, 210, 0.16);
+
+  --radius-xl: 34px;
+  --radius-lg: 26px;
+  --radius-md: 18px;
+  --radius-sm: 14px;
 
   font-family: "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
@@ -36,8 +47,10 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top left, #fff1f6 0, transparent 32%),
-    radial-gradient(circle at top right, #eefbea 0, transparent 30%),
+    radial-gradient(circle at 8% 12%, rgba(255, 209, 232, 0.65) 0, transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(210, 245, 210, 0.75) 0, transparent 26%),
+    radial-gradient(circle at 78% 78%, rgba(205, 183, 255, 0.36) 0, transparent 30%),
+    radial-gradient(circle at 20% 85%, rgba(169, 216, 255, 0.32) 0, transparent 25%),
     var(--bg-main);
   color: var(--text-main);
 }
