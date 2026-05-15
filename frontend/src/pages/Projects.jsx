@@ -1,0 +1,12 @@
+function Login() {
+  return (
+    <main className="page">
+      <div className="page-container">
+        <h1 className="page-title">Login</h1>
+        <p className="page-description">This page will be implemented soon.</p>
+      </div>
+    </main>
+  );
+}
+
+export default Login;
