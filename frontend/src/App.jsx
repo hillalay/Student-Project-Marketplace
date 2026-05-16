@@ -11,6 +11,9 @@ import MyProjects from "./pages/MyProjects";
 import MyApplications from "./pages/MyApplications";
 
 import "./styles/global.css";
+import ApplyProject from "./pages/ApplyProject";
+import ApplicationsReceived from "./pages/ApplicationsReceived";
+
 
 function App() {
   return (
@@ -28,6 +31,8 @@ function App() {
         <Route path="/projects/:id" element={<ProjectDetail />} />
         <Route path="/my-projects" element={<MyProjects />} />
         <Route path="/my-applications" element={<MyApplications />} />
+        <Route path="/projects/:id/apply" element={<ApplyProject />} />
+        <Route path="/applications-received" element={<ApplicationsReceived />} />
       </Routes>
     </BrowserRouter>
   );

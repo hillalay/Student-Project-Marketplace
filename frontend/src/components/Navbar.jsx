@@ -16,29 +16,30 @@ function Navbar() {
     <header className="navbar">
       <Link to="/dashboard" className="navbar-logo">
         <span className="logo-mark">SP</span>
-        <span>Student Projects</span>
+        <span>Öğrenci Projeleri</span>
       </Link>
 
       <nav className="navbar-links">
-        <NavLink to="/dashboard">Dashboard</NavLink>
-        <NavLink to="/projects">Projects</NavLink>
-        <NavLink to="/my-projects">My Projects</NavLink>
-        <NavLink to="/my-applications">Applications</NavLink>
+        <NavLink to="/dashboard">Panel</NavLink>
+        <NavLink to="/projects">Projeler</NavLink>
+        <NavLink to="/my-projects">Benim Projelerim</NavLink>
+        <NavLink to="/my-applications">Başvurularım</NavLink>
+        <NavLink to="/applications-received">Gelen Başvurular</NavLink>
       </nav>
 
       <div className="navbar-actions">
         {!authed ? (
           <>
             <Link to="/login" className="nav-login">
-              Login
+              Giriş Yap
             </Link>
             <Link to="/register" className="nav-register">
-              Register
+              Kayıt Ol
             </Link>
           </>
         ) : (
           <button onClick={handleLogout} className="nav-logout">
-            Logout
+            Çıkış Yap
           </button>
         )}
       </div>
