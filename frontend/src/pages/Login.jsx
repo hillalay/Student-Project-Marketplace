@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { login as loginUser } from "../services/authService";
 import "./Login.css";
 
 function Login() {
@@ -46,7 +47,7 @@ function Login() {
     return "";
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const validationError = validateForm();
@@ -60,17 +61,23 @@ function Login() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    setTimeout(() => {
+    try {
+      await loginUser({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setSuccessMessage("Giriş başarılı. Oturum açıldı.");
+    } catch (error) {
+      setErrorMessage(error.message || "Giriş başarısız oldu.");
+    } finally {
       setIsLoading(false);
-      setSuccessMessage(
-        "Giriş başarılı görünüyor. Backend bağlantısı eklendiğinde kullanıcı oturumu açılacak."
-      );
-    }, 700);
+    }
   };
 
   const handleGoogleLogin = () => {
     setErrorMessage(
-      "Google ile giriş özelliği şu an sadece arayüz olarak hazırlandı. OAuth entegrasyonu sonraki aşamada eklenecek."
+      "Google ile giriş özelliği şu an sadece arayüz olarak hazırlandı. OAuth entegrasyonu sonraki aşamada eklenecek.",
     );
     setSuccessMessage("");
   };
@@ -112,7 +119,9 @@ function Login() {
             <p>Hesabına e-posta ve şifrenle giriş yapabilirsin.</p>
           </div>
 
-          {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="alert alert-error">{errorMessage}</div>
+          )}
 
           {successMessage && (
             <div className="alert alert-success">{successMessage}</div>
@@ -147,7 +156,9 @@ function Login() {
                 <button
                   type="button"
                   className="password-toggle"
-                  onClick={() => setShowPassword((currentValue) => !currentValue)}
+                  onClick={() =>
+                    setShowPassword((currentValue) => !currentValue)
+                  }
                 >
                   {showPassword ? "Gizle" : "Göster"}
                 </button>
@@ -179,7 +190,11 @@ function Login() {
             <span>veya</span>
           </div>
 
-          <button className="google-button" type="button" onClick={handleGoogleLogin}>
+          <button
+            className="google-button"
+            type="button"
+            onClick={handleGoogleLogin}
+          >
             <span className="google-icon">G</span>
             Google ile devam et
           </button>

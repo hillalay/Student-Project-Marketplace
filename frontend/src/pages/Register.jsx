@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { register as registerUser } from "../services/authService";
 import "./Register.css";
 
 function Register() {
@@ -69,7 +70,7 @@ function Register() {
     return "";
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const validationError = validateForm();
@@ -83,17 +84,30 @@ function Register() {
     setErrorMessage("");
     setSuccessMessage("");
 
-    setTimeout(() => {
+    try {
+      await registerUser({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      setSuccessMessage("Kayıt başarılı. Şimdi giriş yapabilirsiniz.");
+
+      setFormData((previousData) => ({
+        ...previousData,
+        password: "",
+        confirmPassword: "",
+      }));
+    } catch (error) {
+      setErrorMessage(error.message || "Kayıt işlemi başarısız oldu.");
+    } finally {
       setIsLoading(false);
-      setSuccessMessage(
-        "Kayıt başarılı görünüyor. Backend bağlantısı eklendiğinde kullanıcı hesabı oluşturulacak."
-      );
-    }, 700);
+    }
   };
 
   const handleGoogleRegister = () => {
     setErrorMessage(
-      "Google ile kayıt özelliği şu an sadece arayüz olarak hazırlandı. OAuth entegrasyonu sonraki aşamada eklenecek."
+      "Google ile kayıt özelliği şu an sadece arayüz olarak hazırlandı. OAuth entegrasyonu sonraki aşamada eklenecek.",
     );
     setSuccessMessage("");
   };

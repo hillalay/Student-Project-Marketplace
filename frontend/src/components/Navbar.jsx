@@ -1,7 +1,17 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink,useNavigate } from "react-router-dom";
 import "./Navbar.css";
+import { isAuthenticated, logout } from "../services/authService";
 
 function Navbar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const authed = isAuthenticated();
+
   return (
     <header className="navbar">
       <Link to="/dashboard" className="navbar-logo">
@@ -17,12 +27,20 @@ function Navbar() {
       </nav>
 
       <div className="navbar-actions">
-        <Link to="/login" className="nav-login">
-          Login
-        </Link>
-        <Link to="/register" className="nav-register">
-          Register
-        </Link>
+        {!authed ? (
+          <>
+            <Link to="/login" className="nav-login">
+              Login
+            </Link>
+            <Link to="/register" className="nav-register">
+              Register
+            </Link>
+          </>
+        ) : (
+          <button onClick={handleLogout} className="nav-logout">
+            Logout
+          </button>
+        )}
       </div>
     </header>
   );

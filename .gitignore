@@ -11,6 +11,13 @@ frontend/node_modules/
 backend/.env
 frontend/.env
 
+# Docker and temporary local files
+.docker/
+docker-data/
+pgdata/
+*.tmp
+*.temp
+
 # Build outputs
 dist/
 build/
