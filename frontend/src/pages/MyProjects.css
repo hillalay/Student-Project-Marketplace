@@ -303,4 +303,16 @@
   .side-info strong {
     text-align: left;
   }
+
+  .my-projects-info-message {
+  background: var(--bg-soft-blue);
+  border: 1px solid var(--border-blue);
+  color: #2f5575;
+  border-radius: 20px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
 }
