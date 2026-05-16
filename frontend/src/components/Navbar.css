@@ -112,4 +112,19 @@
     font-size: 13px;
     padding: 9px 11px;
   }
+
+  .nav-logout {
+  border: none;
+  padding: 10px 15px;
+  border-radius: 999px;
+  background: var(--bg-soft-pink);
+  color: #8a3159;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.nav-logout:hover {
+  background: var(--primary-pink);
+}
+
 }

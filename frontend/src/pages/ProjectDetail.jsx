@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom";
 import { mockProjects } from "../data/mockProjects";
 import "./ProjectDetail.css";
 
+
 function ProjectDetail() {
   const { id } = useParams();
 
@@ -108,9 +109,9 @@ function ProjectDetail() {
                 </div>
               </div>
 
-              <button className="apply-button" type="button">
+              <Link to={`/projects/${project.id}/apply`} className="apply-button">
                 Projeye Başvur
-              </button>
+              </Link>
 
               <p className="apply-note">
                 Başvuru özelliği şu an arayüz olarak hazırlandı. Backend
