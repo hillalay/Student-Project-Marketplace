@@ -1,9 +1,11 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { mockProjects } from "../data/mockProjects";
 import "./MyProjects.css";
 
 function MyProjects() {
   const myProjects = mockProjects.slice(0, 3);
+  const [infoMessage, setInfoMessage] = useState("");
 
   return (
     <main className="my-projects-page">
@@ -25,7 +27,14 @@ function MyProjects() {
           </Link>
         </section>
 
-        <section className="my-projects-summary">
+      {infoMessage && (
+        <div className="my-projects-info-message">
+        {infoMessage}
+        </div>
+      )}
+
+        <section 
+        className="my-projects-summary">
           <div className="summary-card">
             <strong>{myProjects.length}</strong>
             <span>Toplam ilan</span>
@@ -95,7 +104,15 @@ function MyProjects() {
                     Detayları Gör
                   </Link>
 
-                  <button type="button" className="edit-button">
+                  <button
+                    type="button"
+                    className="edit-button"
+                    onClick={() =>
+                      setInfoMessage(
+                        `"${project.title}" ilanını düzenleme özelliği şu an arayüz seviyesinde hazırlandı. Backend entegrasyonu eklendiğinde bu buton gerçek düzenleme sayfasına bağlanacak.`
+                      )
+                    }
+                  >
                     Düzenle
                   </button>
                 </div>
