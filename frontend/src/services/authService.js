@@ -12,6 +12,24 @@ function clearToken() {
   localStorage.removeItem("spm_token");
 }
 
+function setUser(user) {
+  localStorage.setItem("spm_user", JSON.stringify(user));
+}
+
+function getUser() {
+  const user = localStorage.getItem("spm_user");
+
+  if (!user) {
+    return null;
+  }
+
+  return JSON.parse(user);
+}
+
+function clearUser() {
+  localStorage.removeItem("spm_user");
+}
+
 async function register({ fullName, email, password }) {
   return apiRequest("/auth/register", {
     method: "POST",
@@ -31,15 +49,27 @@ async function login({ email, password }) {
     setToken(data.token);
   }
 
+  if (data.user) {
+    setUser(data.user);
+  }
+
   return data;
 }
 
 function logout() {
   clearToken();
+  clearUser();
 }
 
 function isAuthenticated() {
   return !!getToken();
 }
 
-export { register, login, logout, getToken, isAuthenticated };
+export {
+  register,
+  login,
+  logout,
+  getToken,
+  getUser,
+  isAuthenticated,
+};

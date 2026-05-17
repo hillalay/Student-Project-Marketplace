@@ -1,15 +1,55 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectCard from "../components/ProjectCard";
-import { mockProjects, projectCategories } from "../data/mockProjects";
+import { getProjects } from "../services/projectService";
 import "./Projects.css";
 
 function Projects() {
+  const [projects, setProjects] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("Tümü");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const data = await getProjects();
+
+        const formattedProjects = Array.isArray(data)
+          ? data.map((project) => ({
+              ...project,
+              category: project.category_name || "Genel",
+              owner: project.owner_name || "Bilinmeyen Kullanıcı",
+              requiredSkills: project.required_skills
+                ? project.required_skills
+                    .split(",")
+                    .map((skill) => skill.trim())
+                : [],
+            }))
+          : [];
+
+        setProjects(formattedProjects);
+      } catch (error) {
+        setErrorMessage(error.message || "Projeler yüklenirken hata oluştu.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProjects();
+  }, []);
+
+  const projectCategories = useMemo(() => {
+    const categories = projects
+      .map((project) => project.category)
+      .filter(Boolean);
+
+    return ["Tümü", ...new Set(categories)];
+  }, [projects]);
 
   const filteredProjects = useMemo(() => {
-    return mockProjects.filter((project) => {
+    return projects.filter((project) => {
       const matchesCategory =
         selectedCategory === "Tümü" || project.category === selectedCategory;
 
@@ -19,13 +59,13 @@ function Projects() {
         project.title.toLowerCase().includes(searchValue) ||
         project.description.toLowerCase().includes(searchValue) ||
         project.requiredSkills.some((skill) =>
-          skill.toLowerCase().includes(searchValue)
+          skill.toLowerCase().includes(searchValue),
         ) ||
         project.owner.toLowerCase().includes(searchValue);
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchTerm]);
+  }, [projects, selectedCategory, searchTerm]);
 
   return (
     <main className="projects-page">
@@ -79,9 +119,13 @@ function Projects() {
           </div>
         </section>
 
+        {errorMessage && (
+          <div className="alert alert-error">{errorMessage}</div>
+        )}
+
         <section className="projects-summary">
           <div>
-            <strong>{filteredProjects.length}</strong>
+            <strong>{isLoading ? "..." : filteredProjects.length}</strong>
             <span>proje listeleniyor</span>
           </div>
 
@@ -90,7 +134,12 @@ function Projects() {
           </p>
         </section>
 
-        {filteredProjects.length > 0 ? (
+        {isLoading ? (
+          <section className="empty-projects">
+            <h2>Projeler yükleniyor...</h2>
+            <p>Backend’den proje ilanları getiriliyor.</p>
+          </section>
+        ) : filteredProjects.length > 0 ? (
           <section className="projects-grid">
             {filteredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
