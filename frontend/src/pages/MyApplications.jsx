@@ -1,57 +1,74 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getMyApplications } from "../services/applicationService";
 import "./MyApplications.css";
 
-const mockApplications = [
-  {
-    id: 1,
-    projectId: 1,
-    projectTitle: "React Bilen Frontend Developer Aranıyor",
-    category: "Web Development",
-    owner: "Ayşe Demir",
-    status: "Beklemede",
-    appliedAt: "2026-05-15",
-    message:
-      "React ve responsive tasarım konusunda deneyimim var. Projede frontend tarafında destek olmak isterim.",
-  },
-  {
-    id: 2,
-    projectId: 2,
-    projectTitle: "ML Projem İçin Veri Analizi Yapacak Arkadaş Aranıyor",
-    category: "Machine Learning",
-    owner: "Mehmet Kaya",
-    status: "Kabul Edildi",
-    appliedAt: "2026-05-14",
-    message:
-      "Python, Pandas ve veri analizi konularında çalıştım. Veri hazırlama ve sonuç yorumlama kısmında katkı sağlayabilirim.",
-  },
-  {
-    id: 3,
-    projectId: 4,
-    projectTitle: "UI/UX Tasarım Desteği Aranıyor",
-    category: "UI/UX Design",
-    owner: "Can Yıldız",
-    status: "Reddedildi",
-    appliedAt: "2026-05-13",
-    message:
-      "Figma ile temel arayüz tasarımları hazırlayabiliyorum. Proje için wireframe ve kullanıcı akışı çıkarabilirim.",
-  },
-];
-
 function MyApplications() {
-  const totalApplications = mockApplications.length;
-  const acceptedApplications = mockApplications.filter(
-    (application) => application.status === "Kabul Edildi"
+  const [applications, setApplications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchMyApplications() {
+      try {
+        const data = await getMyApplications();
+
+        const formattedApplications = Array.isArray(data)
+          ? data.map((application) => ({
+              id: application.id,
+              projectId: application.project_id,
+              projectTitle: application.project_title,
+              category: application.category_name || "Genel",
+              owner: application.owner_name || "Bilinmeyen Kullanıcı",
+              status: application.status,
+              appliedAt: application.created_at
+                ? new Date(application.created_at).toLocaleDateString("tr-TR")
+                : "Belirtilmedi",
+              message: application.message || "Başvuru mesajı bulunmuyor.",
+            }))
+          : [];
+
+        setApplications(formattedApplications);
+      } catch (error) {
+        setErrorMessage(
+          error.message || "Başvurular yüklenirken hata oluştu."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMyApplications();
+  }, []);
+
+  const totalApplications = applications.length;
+
+  const acceptedApplications = applications.filter(
+    (application) => application.status === "accepted"
   ).length;
-  const pendingApplications = mockApplications.filter(
-    (application) => application.status === "Beklemede"
+
+  const pendingApplications = applications.filter(
+    (application) => application.status === "pending"
   ).length;
+
+  const getStatusLabel = (status) => {
+    if (status === "accepted") {
+      return "Kabul Edildi";
+    }
+
+    if (status === "rejected") {
+      return "Reddedildi";
+    }
+
+    return "Beklemede";
+  };
 
   const getStatusClassName = (status) => {
-    if (status === "Kabul Edildi") {
+    if (status === "accepted") {
       return "status-accepted";
     }
 
-    if (status === "Reddedildi") {
+    if (status === "rejected") {
       return "status-rejected";
     }
 
@@ -78,82 +95,90 @@ function MyApplications() {
           </Link>
         </section>
 
+        {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
+
         <section className="application-summary-grid">
           <div className="application-summary-card">
-            <strong>{totalApplications}</strong>
+            <strong>{isLoading ? "..." : totalApplications}</strong>
             <span>Toplam başvuru</span>
           </div>
 
           <div className="application-summary-card">
-            <strong>{acceptedApplications}</strong>
+            <strong>{isLoading ? "..." : acceptedApplications}</strong>
             <span>Kabul edilen</span>
           </div>
 
           <div className="application-summary-card">
-            <strong>{pendingApplications}</strong>
+            <strong>{isLoading ? "..." : pendingApplications}</strong>
             <span>Bekleyen</span>
           </div>
         </section>
 
-        <section className="applications-list">
-          {mockApplications.map((application) => (
-            <article className="application-card" key={application.id}>
-              <div className="application-main">
-                <div className="application-top">
-                  <span className="application-category">
-                    {application.category}
-                  </span>
+        {isLoading ? (
+          <section className="applications-note">
+            <h3>Başvurular yükleniyor...</h3>
+            <p>Backend’den başvuru bilgilerin getiriliyor.</p>
+          </section>
+        ) : applications.length > 0 ? (
+          <section className="applications-list">
+            {applications.map((application) => (
+              <article className="application-card" key={application.id}>
+                <div className="application-main">
+                  <div className="application-top">
+                    <span className="application-category">
+                      {application.category}
+                    </span>
 
-                  <span
-                    className={`application-status ${getStatusClassName(
-                      application.status
-                    )}`}
+                    <span
+                      className={`application-status ${getStatusClassName(
+                        application.status
+                      )}`}
+                    >
+                      {getStatusLabel(application.status)}
+                    </span>
+                  </div>
+
+                  <h2>{application.projectTitle}</h2>
+
+                  <p className="application-message">{application.message}</p>
+
+                  <div className="application-meta-row">
+                    <div>
+                      <span>İlan sahibi</span>
+                      <strong>{application.owner}</strong>
+                    </div>
+
+                    <div>
+                      <span>Başvuru tarihi</span>
+                      <strong>{application.appliedAt}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="application-actions">
+                  <Link
+                    to={`/projects/${application.projectId}`}
+                    className="application-view-button"
                   >
-                    {application.status}
-                  </span>
+                    Projeyi Gör
+                  </Link>
+
+                  <button type="button" className="application-message-button">
+                    Mesajı Gör
+                  </button>
                 </div>
-
-                <h2>{application.projectTitle}</h2>
-
-                <p className="application-message">{application.message}</p>
-
-                <div className="application-meta-row">
-                  <div>
-                    <span>İlan sahibi</span>
-                    <strong>{application.owner}</strong>
-                  </div>
-
-                  <div>
-                    <span>Başvuru tarihi</span>
-                    <strong>{application.appliedAt}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <div className="application-actions">
-                <Link
-                  to={`/projects/${application.projectId}`}
-                  className="application-view-button"
-                >
-                  Projeyi Gör
-                </Link>
-
-                <button type="button" className="application-message-button">
-                  Mesajı Gör
-                </button>
-              </div>
-            </article>
-          ))}
-        </section>
-
-        <section className="applications-note">
-          <h3>Not</h3>
-          <p>
-            Bu sayfa şu an mock data ile çalışıyor. Backend entegrasyonu
-            eklendiğinde burada giriş yapan kullanıcının gerçek başvuruları ve
-            başvuru durumları listelenecek.
-          </p>
-        </section>
+              </article>
+            ))}
+          </section>
+        ) : (
+          <section className="applications-note">
+            <h3>Henüz başvurun yok</h3>
+            <p>
+              Projeleri keşfedip ilgini çeken bir ilana başvuru yaptığında
+              burada görüntülenecek.
+            </p>
+          </section>
+        )}
       </div>
     </main>
   );

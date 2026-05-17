@@ -1,7 +1,42 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getProjects } from "../services/projectService";
 import "./Dashboard.css";
 
 function Dashboard() {
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const data = await getProjects();
+        setProjects(Array.isArray(data) ? data : []);
+      } catch (error) {
+        setErrorMessage(error.message || "Projeler yüklenirken hata oluştu.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProjects();
+  }, []);
+
+  const openProjectsCount = projects.filter(
+    (project) => project.status === "open",
+  ).length;
+
+  const categoryCount = new Set(
+    projects.map((project) => project.category_name).filter(Boolean),
+  ).size;
+
+  const ownerCount = new Set(
+    projects.map((project) => project.owner_id).filter(Boolean),
+  ).size;
+
+  const featuredProjects = projects.slice(0, 3);
+
   return (
     <main className="page dashboard-page">
       <div className="page-container">
@@ -14,8 +49,8 @@ function Dashboard() {
             </h1>
 
             <p className="page-description">
-              Proje fikirlerini paylaş, belirli becerilere sahip öğrencileri
-              bul ve ilgi alanına uygun projelere başvur.
+              Proje fikirlerini paylaş, belirli becerilere sahip öğrencileri bul
+              ve ilgi alanına uygun projelere başvur.
             </p>
 
             <div className="hero-actions">
@@ -30,37 +65,57 @@ function Dashboard() {
           </div>
 
           <div className="hero-panel">
-            <div className="mini-card yellow-card">
-              <span>React</span>
-              <strong>Frontend ekip arkadaşı aranıyor</strong>
-            </div>
+            {isLoading && (
+              <div className="mini-card yellow-card">
+                <span>Yükleniyor</span>
+                <strong>Projeler getiriliyor...</strong>
+              </div>
+            )}
 
-            <div className="mini-card pink-card">
-              <span>Machine Learning</span>
-              <strong>Veri analizi desteği aranıyor</strong>
-            </div>
+            {!isLoading && featuredProjects.length === 0 && (
+              <div className="mini-card yellow-card">
+                <span>Henüz proje yok</span>
+                <strong>İlk proje ilanını oluşturabilirsin.</strong>
+              </div>
+            )}
 
-            <div className="mini-card green-card">
-              <span>Flutter</span>
-              <strong>Mobil geliştirici aranıyor</strong>
-            </div>
+            {!isLoading &&
+              featuredProjects.map((project, index) => (
+                <div
+                  key={project.id}
+                  className={`mini-card ${
+                    index === 0
+                      ? "yellow-card"
+                      : index === 1
+                        ? "pink-card"
+                        : "green-card"
+                  }`}
+                >
+                  <span>{project.category_name || "Genel"}</span>
+                  <strong>{project.title}</strong>
+                </div>
+              ))}
           </div>
         </section>
 
+        {errorMessage && (
+          <div className="alert alert-error">{errorMessage}</div>
+        )}
+
         <section className="dashboard-stats">
           <div className="stat-card">
-            <strong>24+</strong>
+            <strong>{isLoading ? "..." : openProjectsCount}</strong>
             <span>Açık Proje</span>
           </div>
 
           <div className="stat-card">
-            <strong>12</strong>
+            <strong>{isLoading ? "..." : categoryCount}</strong>
             <span>Kategori</span>
           </div>
 
           <div className="stat-card">
-            <strong>80+</strong>
-            <span>Öğrenci Profili</span>
+            <strong>{isLoading ? "..." : ownerCount}</strong>
+            <span>Proje Sahibi</span>
           </div>
         </section>
 
@@ -68,8 +123,7 @@ function Dashboard() {
           <div className="feature-card card">
             <h3>Proje ilanı oluştur</h3>
             <p>
-              Proje fikrini açıkla ve ekipte ihtiyaç duyduğun becerileri
-              belirt.
+              Proje fikrini açıkla ve ekipte ihtiyaç duyduğun becerileri belirt.
             </p>
           </div>
 
