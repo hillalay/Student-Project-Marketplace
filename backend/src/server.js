@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
+const projectRoutes = require("./routes/projectRoutes");
 const dotenv = require("dotenv");
 
 dotenv.config();
@@ -37,6 +38,8 @@ app.get("/api/test-db", async (req, res) => {
 
 // Auth routes
 app.use("/api/auth", authRoutes);
+// Project routes
+app.use("/api/projects", projectRoutes);
 
 const PORT = process.env.PORT || 5000;
 
