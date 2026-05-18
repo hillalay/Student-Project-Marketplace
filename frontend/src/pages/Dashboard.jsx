@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getProjects } from "../services/projectService";
-import "./Dashboard.css";
+import "../styles/Dashboard.css";
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);

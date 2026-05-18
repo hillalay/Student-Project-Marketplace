@@ -3,7 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { getProjectById } from "../services/projectService";
 import { applyToProject } from "../services/applicationService";
 import { getUser, isAuthenticated } from "../services/authService";
-import "./ProjectDetail.css";
+import "../styles/ProjectDetail.css";
 
 function ProjectDetail() {
   const { id } = useParams();

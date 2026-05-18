@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectCard from "../components/ProjectCard";
 import { getProjects } from "../services/projectService";
-import "./Projects.css";
+import "../styles/Projects.css";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
@@ -21,6 +21,7 @@ function Projects() {
               ...project,
               category: project.category_name || "Genel",
               owner: project.owner_name || "Bilinmeyen Kullanıcı",
+              applicationCount: project.application_count ?? 0,
               requiredSkills: project.required_skills
                 ? project.required_skills
                     .split(",")
