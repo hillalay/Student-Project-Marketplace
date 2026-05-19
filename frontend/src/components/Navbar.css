@@ -67,19 +67,22 @@
   gap: 8px;
 }
 
-.nav-login,
-.nav-register {
+
+.nav-auth-link {
   padding: 10px 15px;
   border-radius: 999px;
+  color: var(--text-muted);
   font-size: 14px;
   font-weight: 900;
+  background: transparent;
 }
 
-.nav-login {
-  color: var(--text-muted);
+.nav-auth-link:hover {
+  background: var(--bg-soft-green);
+  color: #24432d;
 }
 
-.nav-register {
+.nav-auth-active {
   background: var(--primary-green);
   color: #24432d;
 }

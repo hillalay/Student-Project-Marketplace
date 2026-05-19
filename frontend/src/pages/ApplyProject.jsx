@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { mockProjects } from "../data/mockProjects";
-import "./ApplyProject.css";
+import "../styles/ApplyProject.css";
 
 function ApplyProject() {
   const { id } = useParams();

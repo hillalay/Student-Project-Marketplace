@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectCard from "../components/ProjectCard";
-import { getProjects } from "../services/projectService";
-import "./Projects.css";
+import { mockProjects, projectCategories } from "../data/mockProjects";
+import "../styles/Projects.css";
 
 function Projects() {
   const [projects, setProjects] = useState([]);
