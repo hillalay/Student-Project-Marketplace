@@ -265,6 +265,12 @@
   color: #8a3159;
 }
 
+.accept-button:disabled,
+.reject-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
 .received-note {
   margin-top: 22px;
   background: var(--bg-soft-yellow);

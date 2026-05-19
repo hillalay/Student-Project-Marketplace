@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import { getMyApplications } from "../services/applicationService";
-import "./MyApplications.css";
-=======
 import "../styles/MyApplications.css";
->>>>>>> develop
 
 function MyApplications() {
   const [applications, setApplications] = useState([]);

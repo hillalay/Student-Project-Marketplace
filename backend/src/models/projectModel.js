@@ -13,10 +13,13 @@ async function getAllProjects() {
       c.name AS category_name,
       u.id AS owner_id,
       u.name AS owner_name,
-      u.email AS owner_email
+      u.email AS owner_email,
+      COUNT(a.id)::int AS application_count
     FROM projects p
     LEFT JOIN categories c ON p.category_id = c.id
     JOIN users u ON p.owner_id = u.id
+    LEFT JOIN applications a ON a.project_id = p.id
+    GROUP BY p.id, c.name, u.id, u.name, u.email
     ORDER BY p.created_at DESC
   `);
 
@@ -38,11 +41,14 @@ async function getProjectById(id) {
       c.name AS category_name,
       u.id AS owner_id,
       u.name AS owner_name,
-      u.email AS owner_email
+      u.email AS owner_email,
+      COUNT(a.id)::int AS application_count
     FROM projects p
     LEFT JOIN categories c ON p.category_id = c.id
     JOIN users u ON p.owner_id = u.id
+    LEFT JOIN applications a ON a.project_id = p.id
     WHERE p.id = $1
+    GROUP BY p.id, c.name, u.id, u.name, u.email
     `,
     [id]
   );

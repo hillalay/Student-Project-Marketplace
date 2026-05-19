@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-<<<<<<< HEAD
 import { getProjects } from "../services/projectService";
-import "./Dashboard.css";
-=======
 import "../styles/Dashboard.css";
->>>>>>> develop
 
 function Dashboard() {
   const [projects, setProjects] = useState([]);

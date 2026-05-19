@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { register as registerUser } from "../services/authService";
 import "../styles/Register.css";
 
 function Register() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -98,6 +99,10 @@ function Register() {
         password: "",
         confirmPassword: "",
       }));
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 700);
     } catch (error) {
       setErrorMessage(error.message || "Kayıt işlemi başarısız oldu.");
     } finally {

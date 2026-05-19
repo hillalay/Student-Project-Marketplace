@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectCard from "../components/ProjectCard";
-import { mockProjects, projectCategories } from "../data/mockProjects";
+import { getProjects } from "../services/projectService";
 import "../styles/Projects.css";
 
 function Projects() {
@@ -21,6 +21,7 @@ function Projects() {
               ...project,
               category: project.category_name || "Genel",
               owner: project.owner_name || "Bilinmeyen Kullanıcı",
+              applicationCount: project.application_count ?? 0,
               requiredSkills: project.required_skills
                 ? project.required_skills
                     .split(",")

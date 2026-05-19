@@ -60,6 +60,17 @@
   background: #8ed09f;
 }
 
+.my-projects-info-message {
+  background: var(--bg-soft-blue);
+  border: 1px solid var(--border-soft);
+  color: #2f5575;
+  border-radius: 20px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  font-weight: 800;
+  line-height: 1.6;
+}
+
 .my-projects-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -208,7 +219,9 @@
 }
 
 .view-button,
-.edit-button {
+.edit-button,
+.received-link-button,
+.delete-button {
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -235,6 +248,21 @@
 
 .edit-button:hover {
   background: #dff1ff;
+}
+
+.received-link-button {
+  background: var(--bg-soft-yellow);
+  color: #6c5612;
+}
+
+.delete-button {
+  background: var(--bg-soft-pink);
+  color: #8a3159;
+}
+
+.delete-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .my-projects-note {
@@ -303,16 +331,5 @@
   .side-info strong {
     text-align: left;
   }
-
-  .my-projects-info-message {
-  background: var(--bg-soft-blue);
-  border: 1px solid var(--border-blue);
-  color: #2f5575;
-  border-radius: 20px;
-  padding: 16px 18px;
-  margin-bottom: 22px;
-  font-weight: 800;
-  line-height: 1.6;
-}
 
 }

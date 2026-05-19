@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { mockProjects } from "../data/mockProjects";
+import { getProjectById } from "../services/projectService";
+import { applyToProject } from "../services/applicationService";
+import { getUser, isAuthenticated } from "../services/authService";
 import "../styles/ProjectDetail.css";
 
 function ProjectDetail() {

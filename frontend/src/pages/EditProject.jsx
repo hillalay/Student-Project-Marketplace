@@ -1,22 +1,52 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { createProject } from "../services/projectService";
-import { categoryOptions } from "../data/categories";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { getProjectById, updateProject } from "../services/projectService";
+import { getUser } from "../services/authService";
+import { categoryOptions, getCategoryIdByName } from "../data/categories";
 import "../styles/CreateProject.css";
 
-function CreateProject() {
+function EditProject() {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const currentUser = getUser();
 
   const [formData, setFormData] = useState({
     title: "",
     categoryId: "",
     requiredSkills: "",
     description: "",
+    status: "open",
   });
-
+  const [project, setProject] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function fetchProject() {
+      try {
+        const data = await getProjectById(id);
+
+        setProject(data);
+        setFormData({
+          title: data.title || "",
+          categoryId: data.category_id || getCategoryIdByName(data.category_name),
+          requiredSkills: data.required_skills || "",
+          description: data.description || "",
+          status: data.status || "open",
+        });
+      } catch (error) {
+        setErrorMessage(error.message || "Proje bilgileri yüklenirken hata oluştu.");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchProject();
+  }, [id]);
+
+  const isOwner = project && currentUser && currentUser.id === project.owner_id;
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -35,24 +65,12 @@ function CreateProject() {
       return "Lütfen proje başlığını girin.";
     }
 
-    if (formData.title.trim().length < 8) {
-      return "Proje başlığı en az 8 karakter olmalıdır.";
-    }
-
     if (!formData.categoryId) {
       return "Lütfen bir kategori seçin.";
     }
 
-    if (!formData.requiredSkills.trim()) {
-      return "Lütfen gerekli becerileri girin.";
-    }
-
     if (!formData.description.trim()) {
       return "Lütfen proje açıklamasını girin.";
-    }
-
-    if (formData.description.trim().length < 40) {
-      return "Proje açıklaması en az 40 karakter olmalıdır.";
     }
 
     return "";
@@ -68,40 +86,63 @@ function CreateProject() {
       return;
     }
 
-    setIsLoading(true);
-    setErrorMessage("");
-    setSuccessMessage("");
-
     try {
-      await createProject({
+      setIsSaving(true);
+      setErrorMessage("");
+      setSuccessMessage("");
+
+      await updateProject(id, {
         title: formData.title.trim(),
         description: formData.description.trim(),
         required_skills: formData.requiredSkills.trim(),
         category_id: Number(formData.categoryId),
+        status: formData.status,
       });
 
-      setSuccessMessage("Proje ilanı başarıyla oluşturuldu.");
+      setSuccessMessage("Proje başarıyla güncellendi.");
       setTimeout(() => {
-        navigate("/projects");
+        navigate("/my-projects");
       }, 500);
     } catch (error) {
-      setErrorMessage(error.message || "Proje oluşturulurken hata oluştu.");
+      setErrorMessage(error.message || "Proje güncellenirken hata oluştu.");
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
-  const handleReset = () => {
-    setFormData({
-      title: "",
-      categoryId: "",
-      requiredSkills: "",
-      description: "",
-    });
+  if (isLoading) {
+    return (
+      <main className="create-project-page">
+        <div className="page-container">
+          <section className="create-project-form-card">
+            <h1>Proje yükleniyor...</h1>
+            <p>Backend'den proje bilgileri getiriliyor.</p>
+          </section>
+        </div>
+      </main>
+    );
+  }
 
-    setErrorMessage("");
-    setSuccessMessage("");
-  };
+  if (!project || !isOwner) {
+    return (
+      <main className="create-project-page">
+        <div className="page-container">
+          <section className="create-project-form-card">
+            <h1>Bu projeyi düzenleyemezsin</h1>
+            <p>Yalnızca proje sahibi kendi ilanını güncelleyebilir.</p>
+            {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
+            <Link to="/my-projects" className="create-back-link">
+              Benim Projelerim'e dön
+            </Link>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  const selectedCategoryName =
+    categoryOptions.find((category) => String(category.id) === String(formData.categoryId))
+      ?.name || "Seçilmedi";
 
   const skillPreview = formData.requiredSkills
     .split(",")
@@ -111,27 +152,22 @@ function CreateProject() {
   return (
     <main className="create-project-page">
       <div className="page-container">
-        <Link to="/projects" className="create-back-link">
-          ← Proje ilanlarına dön
+        <Link to="/my-projects" className="create-back-link">
+          ← Benim Projelerim'e dön
         </Link>
 
         <section className="create-project-layout">
           <div className="create-project-form-card">
             <div className="create-form-header">
-              <span className="create-badge">Yeni proje ilanı</span>
-
-              <h1>Proje ilanı oluştur</h1>
-
+              <span className="create-badge">Proje düzenle</span>
+              <h1>İlan bilgilerini güncelle</h1>
               <p>
-                Proje fikrini paylaş, hangi becerilere ihtiyacın olduğunu belirt
-                ve doğru ekip arkadaşlarının sana ulaşmasını kolaylaştır.
+                Başlık, açıklama, kategori ve beceri bilgilerini güncel tutarak
+                doğru ekip arkadaşlarının sana ulaşmasını kolaylaştır.
               </p>
             </div>
 
-            {errorMessage && (
-              <div className="alert alert-error">{errorMessage}</div>
-            )}
-
+            {errorMessage && <div className="alert alert-error">{errorMessage}</div>}
             {successMessage && (
               <div className="alert alert-success">{successMessage}</div>
             )}
@@ -143,7 +179,6 @@ function CreateProject() {
                   id="title"
                   name="title"
                   type="text"
-                  placeholder="Örn: React bilen frontend developer aranıyor"
                   value={formData.title}
                   onChange={handleChange}
                 />
@@ -166,6 +201,19 @@ function CreateProject() {
                     ))}
                   </select>
                 </div>
+
+                <div className="form-group">
+                  <label htmlFor="status">Durum</label>
+                  <select
+                    id="status"
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                  >
+                    <option value="open">open</option>
+                    <option value="closed">closed</option>
+                  </select>
+                </div>
               </div>
 
               <div className="form-group">
@@ -174,7 +222,6 @@ function CreateProject() {
                   id="requiredSkills"
                   name="requiredSkills"
                   type="text"
-                  placeholder="Örn: React, JavaScript, CSS"
                   value={formData.requiredSkills}
                   onChange={handleChange}
                 />
@@ -186,7 +233,6 @@ function CreateProject() {
                 <textarea
                   id="description"
                   name="description"
-                  placeholder="Projenin amacını, ihtiyaç duyulan ekip arkadaşını ve beklentilerini açıklayın."
                   value={formData.description}
                   onChange={handleChange}
                 />
@@ -196,17 +242,9 @@ function CreateProject() {
                 <button
                   type="submit"
                   className="create-submit-button"
-                  disabled={isLoading}
+                  disabled={isSaving}
                 >
-                  {isLoading ? "İlan oluşturuluyor..." : "İlanı Oluştur"}
-                </button>
-
-                <button
-                  type="button"
-                  className="create-clear-button"
-                  onClick={handleReset}
-                >
-                  Temizle
+                  {isSaving ? "Kaydediliyor..." : "Kaydet"}
                 </button>
               </div>
             </form>
@@ -215,22 +253,18 @@ function CreateProject() {
           <aside className="create-project-preview">
             <div className="preview-card">
               <span className="preview-label">Önizleme</span>
-
-              <h2>{formData.title || "Proje başlığı burada görünecek"}</h2>
-
-              <p>
-                {formData.description ||
-                  "Proje açıklaması yazıldığında burada kısa bir önizleme olarak görünecek."}
-              </p>
+              <h2>{formData.title || "Proje başlığı"}</h2>
+              <p>{formData.description || "Proje açıklaması"}</p>
 
               <div className="preview-info-list">
                 <div>
                   <span>Kategori</span>
-                  <strong>
-                    {categoryOptions.find(
-                      (category) => String(category.id) === formData.categoryId
-                    )?.name || "Seçilmedi"}
-                  </strong>
+                  <strong>{selectedCategoryName}</strong>
+                </div>
+
+                <div>
+                  <span>Durum</span>
+                  <strong>{formData.status}</strong>
                 </div>
               </div>
 
@@ -238,20 +272,9 @@ function CreateProject() {
                 {skillPreview.length > 0 ? (
                   skillPreview.map((skill) => <span key={skill}>{skill}</span>)
                 ) : (
-                  <span>Beceriler burada görünecek</span>
+                  <span>Beceri belirtilmemiş</span>
                 )}
               </div>
-            </div>
-
-            <div className="create-help-card">
-              <h3>İyi bir ilan nasıl olmalı?</h3>
-
-              <ul>
-                <li>Projenin amacını kısa ve net anlat.</li>
-                <li>Gerekli becerileri açıkça yaz.</li>
-                <li>Beklenen süreyi ve seviyeyi belirt.</li>
-                <li>Başvuracak kişiden ne beklediğini açıkla.</li>
-              </ul>
             </div>
           </aside>
         </section>
@@ -260,4 +283,4 @@ function CreateProject() {
   );
 }
 
-export default CreateProject;
+export default EditProject;
