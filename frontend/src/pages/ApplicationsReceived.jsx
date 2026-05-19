@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import "./ApplicationsReceived.css";
+import "../styles/ApplicationsReceived.css";
 
 const initialApplications = [
   {

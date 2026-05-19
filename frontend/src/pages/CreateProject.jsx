@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { projectCategories } from "../data/mockProjects";
-import "./CreateProject.css";
+import "../styles/CreateProject.css";
 
 function CreateProject() {
   const categories = projectCategories.filter((category) => category !== "Tümü");
