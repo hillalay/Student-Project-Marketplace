@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import ProjectCard from "../components/ProjectCard";
 import { mockProjects, projectCategories } from "../data/mockProjects";
-import "./Projects.css";
+import "../styles/Projects.css";
 
 function Projects() {
   const [selectedCategory, setSelectedCategory] = useState("Tümü");

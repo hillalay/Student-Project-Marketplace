@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { mockProjects } from "../data/mockProjects";
-import "./ProjectDetail.css";
+import "../styles/ProjectDetail.css";
 
 
 function ProjectDetail() {

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./MyApplications.css";
+import "../styles/MyApplications.css";
 
 const mockApplications = [
   {

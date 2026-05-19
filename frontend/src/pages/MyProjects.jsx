@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { mockProjects } from "../data/mockProjects";
-import "./MyProjects.css";
+import "../styles/MyProjects.css";
 
 function MyProjects() {
   const myProjects = mockProjects.slice(0, 3);

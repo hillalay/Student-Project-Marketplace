@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "./Dashboard.css";
+import "../styles/Dashboard.css";
 
 function Dashboard() {
   return (
